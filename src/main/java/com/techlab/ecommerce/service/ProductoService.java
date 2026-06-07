@@ -1,6 +1,8 @@
 package com.techlab.ecommerce.service;
 
 import com.techlab.ecommerce.exception.ProductoNoEncontradoException;
+import com.techlab.ecommerce.exception.StockInsuficienteException;
+import com.techlab.ecommerce.exception.PrecioInvalidoException;
 import com.techlab.ecommerce.model.Producto;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -10,10 +12,10 @@ import java.util.List;
  * Capa de servicio: contiene la lógica de negocio del sistema.
  *
  * Es responsable de:
- *  - Mantener la colección de productos.
- *  - Asignar el id al guardar un nuevo producto.
- *  - Validar los datos antes de guardar o actualizar.
- *  - Buscar, modificar y eliminar productos por id.
+ * - Mantener la colección de productos.
+ * - Asignar el id al guardar un nuevo producto.
+ * - Validar los datos antes de guardar o actualizar.
+ * - Buscar, modificar y eliminar productos por id.
  *
  * No tiene Scanner ni System.out: no interactúa con el usuario.
  * Quien quiera mostrar mensajes o leer datos lo hace por afuera
@@ -41,6 +43,18 @@ public class ProductoService {
 
     // CREATE: agrega un nuevo producto al catálogo.
     public Producto guardar(Producto p) {
+
+        if (p.getNombre() == null || p.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre del producto no puede estar vacío.");
+        }
+
+        if (p.getPrecio() <= 0) {
+            throw new PrecioInvalidoException("El precio debe ser mayor a cero. Se recibió: " + p.getPrecio());
+        }
+
+        if (p.getStock() < 0) {
+            throw new StockInsuficienteException("El stock no puede ser negativo. Se recibió: " + p.getStock());
+        }
 
         // El id lo asigna el servicio, no el usuario. Después de
         // asignarlo, incrementamos el contador para el próximo.
@@ -79,6 +93,19 @@ public class ProductoService {
     // con los nuevos datos. Solo actualiza los campos editables;
     // el id no se modifica nunca.
     public Producto actualizar(int id, Producto datos) {
+
+        if (datos.getNombre() == null || datos.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre del producto no puede estar vacío.");
+        }
+
+        if (datos.getPrecio() <= 0) {
+            throw new PrecioInvalidoException("El precio debe ser mayor a cero. Se recibió: " + datos.getPrecio());
+        }
+
+        if (datos.getStock() < 0) {
+            throw new StockInsuficienteException("El stock no puede ser negativo. Se recibió: " + datos.getStock());
+        }
+
         // Reutilizamos obtenerPorId: si no existe, lanza excepción
         // y la actualización se cancela automáticamente.
         Producto p = obtenerPorId(id);

@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import com.techlab.ecommerce.model.Producto;
 import com.techlab.ecommerce.service.ProductoService;
+import com.techlab.ecommerce.exception.ProductoNoEncontradoException;
 
 
 
@@ -33,8 +36,8 @@ public class ProductoController {
                 // /productos, Spring ejecuta ese método y devuelve la lista de productos en
                 // formato JSON. Sin esta anotación, Spring no sabe qué método ejecutar para
                 // cada request
-    public List<Producto> listarTodos() {
-        return service.listarTodos();
+    public ResponseEntity<List<Producto>> listarTodos() {
+        return ResponseEntity.ok(service.listarTodos()); // devuelve la lista de productos con un status HTTP 200 OK. Spring convierte la lista de objetos Producto a JSON automáticamente
     }
 
     // Endpoint para obtener un producto por su ID
@@ -42,8 +45,13 @@ public class ProductoController {
     // que se reemplaza por el valor real en la URL. Por ejemplo, GET /productos/1 
     // ejecuta este método con id=1 y devuelve el producto con ID 1 en formato JSON.
     @GetMapping("/{id}")
-    public Producto obtenerPorId(@PathVariable int id) {
-        return service.obtenerPorId(id);
+    public ResponseEntity<Producto> obtenerPorId(@PathVariable int id) {
+        try {
+            Producto producto = service.obtenerPorId(id);
+            return ResponseEntity.ok(producto); // devuelve el producto con un status HTTP 200 OK
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.notFound().build(); // devuelve un status HTTP 404 Not Found si el producto no existe
+        }
     }
     // @PathVariable funcionando – Spring tomó el 1 de la URL y lo pasó directamente
     // al método como parámetro id.
@@ -55,21 +63,32 @@ public class ProductoController {
                  // cliente envía un JSON con los datos del producto en el cuerpo de la
                  // request, y Spring lo convierte automáticamente a un objeto Producto de
                  // Java gracias a la anotación @RequestBody.
-    public Producto crearProducto(@RequestBody Producto producto) {
-        return service.guardar(producto);
+    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
+        Producto nuevoProducto = service.guardar(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto); // devuelve el nuevo producto con un status HTTP 201 Created
     }
     // @RequestBody funcionando – Spring tomó el JSON del cuerpo de la request y lo convirtió
     // automáticamente a un objeto Producto de Java. 
     // Enviamos un JSON y el servicio recibió un objeto Java.
 
     @PutMapping("/{id}")
-    public Producto actualizarProducto(@PathVariable int id, @RequestBody Producto producto) {
-        return service.actualizar(id, producto);
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable int id, @RequestBody Producto producto) {
+        try {
+            Producto productoActualizado = service.actualizar(id, producto);
+            return ResponseEntity.ok(productoActualizado); // devuelve el producto actualizado con un status HTTP 200 OK
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.notFound().build(); // devuelve un status HTTP 404 Not Found si el producto no existe
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarProducto(@PathVariable int id) {
-        service.eliminar(id);
+    public ResponseEntity<Void> eliminarProducto(@PathVariable int id) {
+        try {
+            service.eliminar(id);
+            return ResponseEntity.ok().build();
+        } catch (ProductoNoEncontradoException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
