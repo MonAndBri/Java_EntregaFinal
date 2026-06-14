@@ -1,5 +1,7 @@
 package com.techlab.ecommerce.model;
 
+import jakarta.persistence.*;
+
 /**
  * Modelo de dominio: representa un producto del catálogo.
  *
@@ -8,20 +10,30 @@ package com.techlab.ecommerce.model;
  * sobre cómo se almacenan los productos ni cómo se muestran al
  * usuario; su única responsabilidad es representar un producto.
  */
+@Entity
+@Table(name = "productos")
 public class Producto {
 
     // Atributos privados: nadie de afuera puede modificarlos
     // directamente. Para acceder o modificarlos se usan los métodos
     // getters y setters definidos más abajo.
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
+    @Column(name = "precio", nullable = false)
     private double precio;
+    @Column(name = "stock", nullable = false)
     private int stock;
-    private String categoria;
+    
+    @ManyToOne // Muchos productos pertenecen a una sola categoría
+    @JoinColumn(name = "categoria_id", nullable = false) // Nombra la columna FK en MySQL
+    private Categoria categoria; // <-- Cambió de "String" a "Categoria"
 
     // Constructor sin id: el id lo asigna el ProductoService al
     // momento de guardar el producto. El usuario nunca elige el id.
-    public Producto(String nombre, double precio, int stock, String categoria) {
+    public Producto(String nombre, double precio, int stock, Categoria categoria) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
@@ -29,7 +41,8 @@ public class Producto {
     }
 
     // Constructor vacío: útil para crear un Producto y completarlo
-    // con setters después. También lo necesitará Spring/JPA más adelante en el curso.
+    // con setters después. También lo necesitará Spring/JPA más adelante en el
+    // curso.
     public Producto() {
     }
 
@@ -67,24 +80,20 @@ public class Producto {
         this.stock = stock;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
-    // toString() sobreescribe el método heredado de Object.
-    // Sirve para mostrar el producto de forma legible al listarlo
-    // en consola. Cuando hagamos System.out.println(producto), Java
-    // llama automáticamente a este método.
     @Override
     public String toString() {
         return "ID: " + id +
                 " | " + nombre +
                 " | $" + precio +
                 " | Stock: " + stock +
-                " | Categoría: " + categoria;
+                " | Categoría: " + categoria.getNombre();
     }
 }

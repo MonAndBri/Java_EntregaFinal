@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.1.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.techlab</groupId>
@@ -40,6 +40,22 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Incluye JPA e Hibernate. Permite anotar clases Java con @Entity, @Id,
+     	@GeneratedValue y @Column para mapearlas a tablas de la base de datos.
+     	Hibernate traduce esas anotaciones a SQL automáticamente. -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- Driver JDBC de MySQL. Es el puente entre Java y el servidor MySQL de XAMPP. -->
+		<dependency>
+    		<groupId>com.mysql</groupId>
+    		<artifactId>mysql-connector-j</artifactId>
+    		<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

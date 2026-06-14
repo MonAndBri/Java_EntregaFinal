@@ -1,10 +1,18 @@
 package com.techlab.ecommerce.model;
 
+import jakarta.persistence.*;
+
 // Cada Producto pertenece a una Categoría.
+@Entity // Esto le dice a JPA que esta clase se mapea a una tabla de la base de datos.
+@Table(name = "categorias") // Opcional: especifica el nombre de la tabla
 public class Categoria {
 
+    @Id // Esto le dice a JPA que este campo es la clave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Generación automática de IDs
     private int id;
+    @Column(name = "nombre", nullable = false, length = 50, unique = true)
     private String nombre;
+    @Column(name = "descripcion", length = 200)
     private String descripcion;
 
     public Categoria(String nombre, String descripcion) {
