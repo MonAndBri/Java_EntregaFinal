@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.techlab.ecommerce.exception.PrecioInvalidoException;
 import com.techlab.ecommerce.exception.ProductoNoEncontradoException;
-import com.techlab.ecommerce.exception.StockInsuficienteException;
 import com.techlab.ecommerce.model.Producto;
 import com.techlab.ecommerce.repository.ProductoRepository;
 
@@ -24,16 +22,6 @@ public class ProductoService {
 
     // CREATE
     public Producto guardar(Producto p) {
-        // Validaciones con if — se reemplazan por anotaciones en el Bloque D.
-        if (p.getNombre() == null || p.getNombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre del producto no puede estar vacío.");
-        }
-        if (p.getPrecio() <= 0) {
-            throw new PrecioInvalidoException("El precio debe ser mayor a cero. Se recibió: " + p.getPrecio());
-        }
-        if (p.getStock() < 0) {
-            throw new StockInsuficienteException("El stock no puede ser negativo. Se recibió: " + p.getStock());
-        }
         // save: si el id es 0 inserta; si ya existe, actualiza. Devuelve el objeto con id asignado.
         return repository.save(p);
     }
@@ -51,15 +39,6 @@ public class ProductoService {
 
     // UPDATE
     public Producto actualizar(int id, Producto datos) {
-        if (datos.getNombre() == null || datos.getNombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre del producto no puede estar vacío.");
-        }
-        if (datos.getPrecio() <= 0) {
-            throw new PrecioInvalidoException("El precio debe ser mayor a cero. Se recibió: " + datos.getPrecio());
-        }
-        if (datos.getStock() < 0) {
-            throw new StockInsuficienteException("El stock no puede ser negativo. Se recibió: " + datos.getStock());
-        }
         // Reutiliza obtenerPorId: si no existe, corta acá con la excepción.
         Producto p = obtenerPorId(id);
         p.setNombre(datos.getNombre());
@@ -75,5 +54,15 @@ public class ProductoService {
         // Verifica existencia primero para devolver 404 coherente.
         Producto p = obtenerPorId(id);
         repository.delete(p);
+    }
+
+    // Método de consulta personalizados: busca productos por su nombre.
+    public List<Producto> buscarPorNombre(String nombre) {
+        return repository.findByNombreContaining(nombre);
+    }
+    
+    // Método de consulta personalizado: busca productos por el nombre de su categoría.
+    public List<Producto> buscarPorCategoria(String categoria) {
+        return repository.buscarPorCategoria(categoria);
     }
 }

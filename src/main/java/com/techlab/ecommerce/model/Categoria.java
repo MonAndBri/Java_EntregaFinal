@@ -1,6 +1,7 @@
 package com.techlab.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 // Cada Producto pertenece a una Categoría.
 @Entity // Esto le dice a JPA que esta clase se mapea a una tabla de la base de datos.
@@ -10,8 +11,12 @@ public class Categoria {
     @Id // Esto le dice a JPA que este campo es la clave primaria
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Generación automática de IDs
     private int id;
+
+    @NotBlank(message = "El nombre de la categoría no puede estar vacío")
     @Column(name = "nombre", nullable = false, length = 50, unique = true)
     private String nombre;
+    
+    @NotBlank(message = "La descripción de la categoría no puede estar vacía")
     @Column(name = "descripcion", length = 200)
     private String descripcion;
 

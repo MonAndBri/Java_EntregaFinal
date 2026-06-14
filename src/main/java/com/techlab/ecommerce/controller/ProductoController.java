@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 
 import com.techlab.ecommerce.model.Producto;
 import com.techlab.ecommerce.service.ProductoService;
+
+import jakarta.validation.Valid;
+
 import com.techlab.ecommerce.exception.ProductoNoEncontradoException;
 
 
@@ -63,7 +66,7 @@ public class ProductoController {
                  // cliente envía un JSON con los datos del producto en el cuerpo de la
                  // request, y Spring lo convierte automáticamente a un objeto Producto de
                  // Java gracias a la anotación @RequestBody.
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
+    public ResponseEntity<Producto> crearProducto(@Valid @RequestBody Producto producto) {
         Producto nuevoProducto = service.guardar(producto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto); // devuelve el nuevo producto con un status HTTP 201 Created
     }
@@ -72,7 +75,7 @@ public class ProductoController {
     // Enviamos un JSON y el servicio recibió un objeto Java.
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable int id, @RequestBody Producto producto) {
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable int id, @Valid @RequestBody Producto producto) {
         try {
             Producto productoActualizado = service.actualizar(id, producto);
             return ResponseEntity.ok(productoActualizado); // devuelve el producto actualizado con un status HTTP 200 OK
@@ -89,6 +92,18 @@ public class ProductoController {
         } catch (ProductoNoEncontradoException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // GET /productos/nombre/{nombre}
+    @GetMapping("/nombre/{nombre}")
+    public ResponseEntity<List<Producto>> buscarPorNombre(@PathVariable String nombre) {
+        return ResponseEntity.ok(service.buscarPorNombre(nombre));
+    }
+
+    // GET /productos/categoria/{categoria}
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<Producto>> buscarPorCategoria(@PathVariable String categoria) {
+        return ResponseEntity.ok(service.buscarPorCategoria(categoria));
     }
 
 }

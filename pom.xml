@@ -56,6 +56,12 @@
     		<scope>runtime</scope>
 		</dependency>
 
+		<!-- Hibernate Validator: habilita @NotBlank, @Positive, @PositiveOrZero, etc. -->
+		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
