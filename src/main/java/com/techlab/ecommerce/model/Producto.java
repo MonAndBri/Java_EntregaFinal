@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.*;
 
 /**
  * Modelo de dominio: representa un producto del catálogo.
@@ -15,6 +16,10 @@ import jakarta.validation.constraints.PositiveOrZero;
  */
 @Entity
 @Table(name = "productos")
+@Getter                  // Lombok genera todos los Getters automáticamente
+@Setter                  // Lombok genera todos los Setters automáticamente
+@NoArgsConstructor       // Lombok genera el constructor vacío invisible
+@AllArgsConstructor      // Lombok genera el constructor con todos los campos
 public class Producto {
 
     // Atributos privados: nadie de afuera puede modificarlos
@@ -49,54 +54,9 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    // Constructor vacío: útil para crear un Producto y completarlo
-    // con setters después. También lo necesitará Spring/JPA más adelante en el
-    // curso.
-    public Producto() {
-    }
-
-    // Getters y setters: la única forma de acceder o modificar
-    // los atributos privados desde afuera de la clase.
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
+    // Dejo la sobreescritura de toString para evitar el error de StackOverflow al imprimir un producto, 
+    // ya que la categoría también tiene un toString que a su vez imprime sus productos, 
+    // generando un ciclo infinito.
     @Override
     public String toString() {
         return "ID: " + id +
