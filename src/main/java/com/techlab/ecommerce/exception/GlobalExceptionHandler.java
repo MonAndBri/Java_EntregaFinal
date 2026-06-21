@@ -26,4 +26,29 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CategoriaNoEncontradaException.class)
+    public ResponseEntity<String> handleCategoriaNoEncontrada(CategoriaNoEncontradaException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ProductoNoEncontradoException.class)
+    public ResponseEntity<String> handleProductoNoEncontrado(ProductoNoEncontradoException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CategoriaNombreInvalidoException.class)
+    public ResponseEntity<String> handleCategoriaNombreInvalido(CategoriaNombreInvalidoException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PrecioInvalidoException.class)
+    public ResponseEntity<String> handlePrecioInvalido(PrecioInvalidoException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(StockInsuficienteException.class)
+    public ResponseEntity<String> handleStockInsuficiente(StockInsuficienteException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -18,14 +19,11 @@ import com.techlab.ecommerce.service.ProductoService;
 
 import jakarta.validation.Valid;
 
-import com.techlab.ecommerce.exception.ProductoNoEncontradoException;
-
-
-
 @RestController // le dice a Spring que esta clase va a manejar requests HTTP y que las
                 // respuestas se van a serializar automáticamente a JSON. Sin esta anotación,
                 // Spring no sabe que esta clase es un controlador
 @RequestMapping("/productos") // define la URL base. Todo endpoint de esta clase va a empezar con /productos
+@CrossOrigin(origins = "http://localhost:5500") // (ajustar el puerto si es necesario)
 public class ProductoController {
 
     private final ProductoService service; // Inyección por constructor - ProductoService no se crea con new. Spring lo
@@ -49,12 +47,7 @@ public class ProductoController {
     // ejecuta este método con id=1 y devuelve el producto con ID 1 en formato JSON.
     @GetMapping("/{id}")
     public ResponseEntity<Producto> obtenerPorId(@PathVariable int id) {
-        try {
-            Producto producto = service.obtenerPorId(id);
-            return ResponseEntity.ok(producto); // devuelve el producto con un status HTTP 200 OK
-        } catch (ProductoNoEncontradoException e) {
-            return ResponseEntity.notFound().build(); // devuelve un status HTTP 404 Not Found si el producto no existe
-        }
+        return ResponseEntity.ok(service.obtenerPorId(id)); // devuelve el producto con el ID especificado con un status HTTP 200 OK. Si no existe, el servicio lanza una excepción que se maneja en GlobalExceptionHandler para devolver un 404 Not Found.
     }
     // @PathVariable funcionando – Spring tomó el 1 de la URL y lo pasó directamente
     // al método como parámetro id.
@@ -67,8 +60,7 @@ public class ProductoController {
                  // request, y Spring lo convierte automáticamente a un objeto Producto de
                  // Java gracias a la anotación @RequestBody.
     public ResponseEntity<Producto> crearProducto(@Valid @RequestBody Producto producto) {
-        Producto nuevoProducto = service.guardar(producto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto); // devuelve el nuevo producto con un status HTTP 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.guardar(producto));
     }
     // @RequestBody funcionando – Spring tomó el JSON del cuerpo de la request y lo convirtió
     // automáticamente a un objeto Producto de Java. 
@@ -76,22 +68,13 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizarProducto(@PathVariable int id, @Valid @RequestBody Producto producto) {
-        try {
-            Producto productoActualizado = service.actualizar(id, producto);
-            return ResponseEntity.ok(productoActualizado); // devuelve el producto actualizado con un status HTTP 200 OK
-        } catch (ProductoNoEncontradoException e) {
-            return ResponseEntity.notFound().build(); // devuelve un status HTTP 404 Not Found si el producto no existe
-        }
+        return ResponseEntity.ok(service.actualizar(id, producto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable int id) {
-        try {
-            service.eliminar(id);
-            return ResponseEntity.ok().build();
-        } catch (ProductoNoEncontradoException e) {
-            return ResponseEntity.notFound().build();
-        }
+        service.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 
     // GET /productos/nombre/{nombre}
