@@ -86,7 +86,7 @@ Antes de levantar el proyecto, asegurate de tener instalado:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/ecommerce-techlab.git
+git clone https://github.com/MonAndBri/Java_EntregaFinal.git
 cd ecommerce-techlab
 ```
 
