@@ -14,7 +14,7 @@ public class Categoria {
 
     @Id // Esto le dice a JPA que este campo es la clave primaria
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Generación automática de IDs
-    private int id;
+    private Integer id;
 
     @NotBlank(message = "El nombre de la categoría no puede estar vacío")
     @Column(name = "nombre", nullable = false, length = 50, unique = true)

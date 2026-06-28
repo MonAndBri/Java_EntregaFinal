@@ -27,7 +27,7 @@ public class Producto {
     // getters y setters definidos más abajo.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @NotBlank(message = "El nombre del producto no puede estar vacío")
     @Column(name = "nombre", nullable = false, length = 100)

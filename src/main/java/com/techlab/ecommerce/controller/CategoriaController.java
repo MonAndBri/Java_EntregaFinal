@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +20,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/categorias")
-@CrossOrigin(origins = "http://localhost:5500") // Permite solicitudes desde el frontend (ajustar el puerto si es
-                                                // necesario)
 public class CategoriaController {
     private final CategoriaService service;
 
@@ -36,7 +33,7 @@ public class CategoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable int id) {
+    public ResponseEntity<Categoria> obtenerCategoria(@PathVariable Integer id) {
         return ResponseEntity.ok(service.obtenerPorId(id));
     }
 
@@ -47,12 +44,12 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> actualizar(@PathVariable int id, @Valid @RequestBody Categoria datos) {
+    public ResponseEntity<Categoria> actualizar(@PathVariable Integer id, @Valid @RequestBody Categoria datos) {
         return ResponseEntity.ok(service.actualizar(id, datos));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable int id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         service.eliminar(id);
         return ResponseEntity.noContent().build(); // <-- Devuelve un código 204 No Content para indicar que la
                                                    // eliminación fue exitosa pero no hay contenido que devolver

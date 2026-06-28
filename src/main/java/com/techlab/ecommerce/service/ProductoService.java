@@ -32,13 +32,13 @@ public class ProductoService {
     }
 
     // READ: por id. findById devuelve Optional — si está vacío, lanzamos la excepción.
-    public Producto obtenerPorId(int id) {
+    public Producto obtenerPorId(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ProductoNoEncontradoException("No se encontró un producto con id " + id));
     }
 
     // UPDATE
-    public Producto actualizar(int id, Producto datos) {
+    public Producto actualizar(Integer id, Producto datos) {
         // Reutiliza obtenerPorId: si no existe, corta acá con la excepción.
         Producto p = obtenerPorId(id);
         p.setNombre(datos.getNombre());
@@ -50,7 +50,7 @@ public class ProductoService {
     }
 
     // DELETE
-    public void eliminar(int id) {
+    public void eliminar(Integer id) {
         // Verifica existencia primero para devolver 404 coherente.
         Producto p = obtenerPorId(id);
         repository.delete(p);
@@ -63,6 +63,6 @@ public class ProductoService {
     
     // Método de consulta personalizado: busca productos por el nombre de su categoría.
     public List<Producto> buscarPorCategoria(String categoria) {
-        return repository.buscarPorCategoria(categoria);
+        return repository.findByCategoriaNombreContainingIgnoreCase(categoria);
     }
 }

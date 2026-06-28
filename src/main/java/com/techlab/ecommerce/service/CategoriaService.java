@@ -24,19 +24,19 @@ public class CategoriaService {
         return repository.findAll();
     }
 
-    public Categoria obtenerPorId(int id) {
+    public Categoria obtenerPorId(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new CategoriaNoEncontradaException("No se encontró una categoría con id " + id));
     }
 
-    public Categoria actualizar(int id, Categoria datos) {
+    public Categoria actualizar(Integer id, Categoria datos) {
         Categoria c = obtenerPorId(id);
         c.setNombre(datos.getNombre());
         c.setDescripcion(datos.getDescripcion());
         return repository.save(c);
     }
 
-    public void eliminar(int id) {
+    public void eliminar(Integer id) {
         Categoria c = obtenerPorId(id);
         repository.delete(c);
     }
