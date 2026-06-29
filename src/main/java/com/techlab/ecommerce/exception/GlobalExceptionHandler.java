@@ -16,14 +16,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> manejarErroresValidacion(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
-        
+
         // Recorremos todos los campos que fallaron y extraemos SU mensaje personalizado
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String campo = ((FieldError) error).getField();
             String mensaje = error.getDefaultMessage();
             errores.put(campo, mensaje);
         });
-        
+
         return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
     }
 
@@ -50,5 +50,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(StockInsuficienteException.class)
     public ResponseEntity<String> handleStockInsuficiente(StockInsuficienteException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> manejarExcepcionGenerica(Exception ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Ocurrió un error inesperado en el servidor");
+        error.put("detalle", ex.getMessage()); // Opcional: para debuggear en desarrollo
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 }

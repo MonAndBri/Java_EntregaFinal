@@ -196,6 +196,10 @@ Si se envía un payload con valores inválidos, la API responde `400 Bad Request
 
 Todas las excepciones de negocio son interceptadas por `GlobalExceptionHandler` (`@RestControllerAdvice`), eliminando bloques `try-catch` en los controladores y garantizando respuestas JSON consistentes en toda la API.
 
+### Red de seguridad global
+
+Se incorporó un interceptor de última instancia para `Exception.class` que captura cualquier fallo genérico imprevisto del sistema (errores 500), formateando la salida para evitar la fuga de información sensible del servidor.
+
 ---
 
 ## ✨ Características destacadas
